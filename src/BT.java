@@ -1,7 +1,7 @@
  /**
   * @author Andew Hall Chris Bouton
   *
-  *  Class BT
+  *  Class BT specilized for SciFiLi project to deal with the special properties of Books
   *  Java Program to Implement Binary Tree
   *  https://www.sanfoundry.com/java-program-implement-binary-tree/
   */
@@ -10,7 +10,7 @@
  class BT
  {
      private BTNode root;
-     private BTNode current;
+     public BTNode current;
 
      /* Constructor */
      public BT()
@@ -27,41 +27,59 @@
 
      /* Functions to insert data */
 
-     public void insert(String author)
+     public void insert(Book book)
      {
-         root = insert(root, null, author);
+         root = insert(root, null, book);
      }
 
      /* Function to insert author recursively */
 
-     private BTNode insert(BTNode node, BTNode parent, String author)
+     private BTNode insert(BTNode node, BTNode parent, Book book)
      {
+         String author = book.getAuthor();
+
+         //base case
+
          if (node == null) {
              node = new BTNode(author);
              node.setParent(parent);
+             node.addBook(book);
+         }
+         else if(node.getAuthor().compareTo(author)==0){
+             node.addBook(book);
          }
          else
          {
-             if (node.getRight() == null) {
-                 node.right = insert(node.right, node, author);
+             if (author.compareTo(node.getAuthor()) > 0){
+                 node.right = insert(node.right, node, book);
                  node.setParent(parent);
+
              }
-             else{
-                 node.left = insert(node.left, node, author);
+             else if(author.compareTo(node.getAuthor()) < 0){
+                 node.left = insert(node.left, node, book);
                  node.setParent(parent);
+
              }
+//             if (node.getRight() == null) {
+//                 node.right = insert(node.right, node, author);
+//                 node.setParent(parent);
+//             }
+//             else{
+//                 node.left = insert(node.left, node, author);
+//                 node.setParent(parent);
+//             }
          }
          return node;
      }
 
-     public void insert(Book book){
-         String aut = book.getAuthor();
-         current = null;
-         search(aut);
-         if(current != null){
-             current.addBook(book);
-         }
-     }
+//     public void insert(Book book){
+//         String aut = book.getAuthor();
+//         current = null;
+//         search(aut);
+//         if(current != null){
+//             current.addBook(book);
+//         }
+//     }
 
      /* Function to count number of nodes */
 
@@ -123,7 +141,7 @@
          if (r != null)
          {
              inorder(r.getLeft());
-             System.out.print(r.getAuthor() +" ");
+             System.out.println(r.getAuthor() +" ");
              inorder(r.getRight());
          }
      }

@@ -76,9 +76,6 @@ class BTNode
     }
 
     public boolean addBook(Book book){
-        /*
-        unimplemented
-         */
         return true;
     }
 

@@ -25,35 +25,42 @@ public class SciFiLi {
 
         lib = new BT();
 
-        while(reader.hasNextLine()){
+        /*
+        Main loop for reader
+         */
+        while(reader.hasNextLine()) {
             /*
             Parse Line into Book
              */
             //>>
-            String rIn = reader.nextLine();//.replaceAll("\\s", "");
+            String rIn = reader.nextLine();
             String[] rArr = rIn.split(",");
             String title = rArr[0];
             String author = rArr[1].trim();
-            String CIOparse = rArr[2].trim();
+            String CIOparse = rArr[2].trim(); // "0" or "1"
             //System.out.println("#"+CIOparse+"#");
             int importance = Integer.parseInt(rArr[3].trim());
             boolean CIn;
-            if(CIOparse.equals("1")){
+            if (CIOparse.equals("1")) {
                 CIn = true;
-            }
-            else if(CIOparse.equals("0")){
+            } else if (CIOparse.equals("0")) {
                 CIn = false;
-            }
-            else{
+            } else {
                 System.out.println("Checked In/Out Error");
                 CIn = false;
             }
-            Book currBook = new Book(title,author,importance);
+            Book currBook = new Book(title, author, importance);
             currBook.setCheckedIn(CIn);
             //<<
-            
-            System.out.println(currBook);
+            lib.insert(currBook);
+            //System.out.println(currBook);
+
         }
+        lib.inorder();
+
+        /*
+        Main loop for UI menu
+         */
         //while (UI.hasNextLine()){
 
         //}

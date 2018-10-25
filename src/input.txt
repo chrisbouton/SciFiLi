@@ -13,7 +13,7 @@ Wheel Of Time Series, Jordan, 1, 55
 Animal Farm, Orwell, 1, 51
 Neuromancer, Gibson, 1, 86
 Watchmen, Moore, 1, 52
-I, Robot, Asimov, 1, 28
+I Robot, Asimov, 1, 28
 Stranger In A Strange Land, Heinlein, 1, 56
 Kingkiller Chronicles, Rothfuss, 1, 87
 Slaughterhouse-Five, Vonnegut, 0, 16
@@ -34,7 +34,7 @@ Dragonflight, McCaffrey, 1, 83
 Moon Is A Harsh Mistress, Heinlein, 0, 30
 Canticle For Leibowitz, Miller, 0, 8
 Time Machine, Wells, 0, 47
-20,000 Leagues Under The Sea, Verne, 1, 31
+20000 Leagues Under The Sea, Verne, 1, 31
 Flowers For Algernon, Keys, 0, 33
 War Of The Worlds, Wells, 0, 60
 Chronicles Of Amber, Zelazny, 1, 88
