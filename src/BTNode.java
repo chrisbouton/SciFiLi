@@ -9,7 +9,7 @@ class BTNode
 {
     BTNode left, right, parent;
     private String Author;
-    private LinkedList<Book> books;
+    private List<Book> books;
 
     /* Constructor */
     public BTNode()
@@ -18,6 +18,7 @@ class BTNode
         right = null;
         parent = null;
         Author = "Unknown";
+        books = new List<>();
     }
     /* Constructor */
 
@@ -27,6 +28,7 @@ class BTNode
         right = null;
         parent = null;
         Author = author;
+        books = new List<>();
     }
 
     /* Function to set left node */
@@ -76,10 +78,11 @@ class BTNode
     }
 
     public boolean addBook(Book book){
+        books.InsertAfter(book);
         return true;
     }
 
-    public LinkedList<Book> getBooks() {
+    public List<Book> getBooks() {
         return books;
     }
 

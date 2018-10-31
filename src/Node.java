@@ -1,31 +1,36 @@
-/**
- * Andrew Hall
- * 9/26/18
- *
- * Node Class - handles all my issues
+/****************************************
+ * Chris Bouton
+ * October 1, 2018
+ * Node Class - handles any form of data
  */
 
-public class Node<Type>
-{
+// the Node class
+class Node<Type> {
+    // fields
+	private Type data;
+	private Node<Type> link;
 
-    private Node<Type> link;
-    private Type data;
+	// constructor
+	public Node(){
+        this.data = null;
+		this.link = null;
+	}
 
-    public Node(){
-        link = null;
-    }
-    // accessor mutator for link
-    public void setLink(Node node){
-        link = node;
-    }
-    public Node<Type> getLink(){
-        return this.link;
-    }
-    //accessor mutator for data
-    public void setData(Type data){
-        this.data = data;
-    }
-    public  Type getData(){
-        return this.data;
-    }
+	// accessors and mutators for the data component
+	public Type getData(){
+		return this.data;
+	}
+
+	public void setData(Type data){
+		this.data = data;
+	}
+
+	// accessors and mutators for the link component
+	public Node<Type> getLink(){
+		return this.link;
+	}
+
+	public void setLink(Node<Type> link){
+		this.link = link;
+	}
 }
