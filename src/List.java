@@ -185,6 +185,15 @@ public class List<Type>{
 		}
 	}
 
+	//#Chris#
+	public void abcInsert(Type data){
+
+	}
+
+	public void impInsert(Type data,int imp){
+
+	}
+
 	// removes the current element (collapsing the list)
 	// this should not be possible for an empty list
 	public void Remove(){
@@ -233,7 +242,7 @@ public class List<Type>{
 
 	// returns if two lists are equal (by value)
 	public boolean Equals(List<Type> l){
-		// if they aren't the same size, they definitely are not equal 
+		// if they aren't the same size, they def4-initely are not equal
 		if (this.num_items != l.num_items)
 			return false;
         
@@ -274,7 +283,6 @@ public class List<Type>{
 			t.InsertAfter(n.getData());
 			n = n.getLink();
 		}
-
 		return t;
 	}
 

@@ -9,16 +9,38 @@ public class SciFiLi {
     private static int bookCount;
     public static void main(String[] args)throws Exception{
 
+        //log reader
+        File log = new File("src//log.txt");
+        Scanner logReader = new Scanner(log);
+        int logNum = Integer.parseInt(logReader.next());
+        System.out.println(logNum);
+
+        //path for current days' log
+        String path = "src//Logs//dayOut"+logNum+".txt";
+//        writer for dayOut#.txt
+//        System.out.println(path);
+//        FileWriter fileWriter = new FileWriter(path);
+//        PrintWriter printWriter = new PrintWriter(fileWriter);
         /*
         source file and scanners
         */
-
-        File input = new File("src//input.txt");
+        File input = new File("src//Logs//dayOut1.txt");
+        //File input = new File(path);
         // reads the File input
         Scanner reader = new Scanner(input);//file);
         // takes user input
         Scanner UI = new Scanner(System.in);
 
+//        //update log
+//        FileWriter logWriter = new FileWriter("src//log.txt");
+//        PrintWriter logPrinter = new PrintWriter(logWriter);
+//        logPrinter.print(logNum+1);
+//        logPrinter.close();
+//
+//        //write to dayOut#.txt
+//        printWriter.println(logNum);
+//        printWriter.println("bookTitle, bookAuthor, Cio, importance");
+//        printWriter.close();
 
         /*
         Static variables
@@ -55,6 +77,7 @@ public class SciFiLi {
             currBook.setCheckedIn(CIn);
             //<<
             lib.insert(currBook);
+            //#Chris# lib.acbInsert(currBook);
             bookCount++;
             //System.out.println(currBook);
 
@@ -145,7 +168,7 @@ public class SciFiLi {
                         System.out.println();
                     }
                     else{
-                        System.out.println("All Books by Title: ");
+                        System.out.println("All Books sorted by Title: ");
                         System.out.println();
                     }
                 }
@@ -155,8 +178,9 @@ public class SciFiLi {
                         System.out.println();
                     }
                     else{
-                        System.out.println("All Books by Author: ");
+                        System.out.println("All Books sorted by Author: ");
                         System.out.println();
+                        printAllNodes();
                     }
                 }
                 else{
@@ -270,7 +294,8 @@ public class SciFiLi {
                 System.out.println("You selected to: ");
                 System.out.println("Run a Fire Drill");
                 Random rand = new Random();
-                System.out.println("You managed to save "+rand.nextInt(bookCount/2)+" books");
+                int numOfBook = rand.nextInt((bookCount/2)+1);
+                System.out.println("You managed to save "+numOfBook+" books");
                 System.out.println("Im sorry, I have not implemented this feature yet");
             }
             // #8# exit
@@ -285,5 +310,23 @@ public class SciFiLi {
             System.out.println("Thank you user!");
         }
         System.out.println("Goodbye User");
+    }
+
+    static void printAllNodes(){
+        lib.goRoot();
+        printAllNode(lib.current);
+    }
+
+    static void printAllNode(BTNode n)throws NullPointerException{
+        System.out.println("Book(s) by: "+n.getAuthor());
+        n.printBooks();
+        if(n.getLeft()!=null){
+            //System.out.println("left");
+            printAllNode(n.getLeft());
+        }
+        if(n.getRight()!=null){
+            //System.out.println("right");
+            printAllNode(n.getRight());
+        }
     }
 }

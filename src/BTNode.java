@@ -86,6 +86,17 @@ class BTNode
         return books;
     }
 
+    public void printBooks(){
+        books.First();
+        int size = books.GetSize();
+        //System.out.println(size);
+        for(int i=0; i<size;i++) {
+            Book curr = books.GetValue();
+            System.out.println((i+1)+"... "+curr);
+            books.Next();
+        }
+    }
+
     public boolean checkBook(Book book){
          /*
         unimplemented

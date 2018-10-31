@@ -25,6 +25,10 @@
          return root == null;
      }
 
+     public void goRoot(){
+         current = root;
+     }
+
      /* Functions to insert data */
 
      public void insert(Book book)
