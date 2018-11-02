@@ -6,8 +6,6 @@
  * Using generics, we allow for the List and Nodes to use different types (allowing for lists of char, int, and float.)
  *************************************************** */
 
-
-
 // the List class
 public class List<Type>{
     // fields 
@@ -183,15 +181,6 @@ public class List<Type>{
             // no matter how or where we insert this new node, the list grows by one
 			this.num_items++;
 		}
-	}
-
-	//#Chris#
-	public void abcInsert(Type data){
-
-	}
-
-	public void impInsert(Type data,int imp){
-
 	}
 
 	// removes the current element (collapsing the list)

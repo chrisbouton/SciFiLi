@@ -58,6 +58,17 @@ public class Book {
         String ret = "" + Title + " by " + Author + IO + " Imp# : " + importance;
         return ret;
     }
+
+    public String toWrite(){
+        String IO;
+        if (checkedIn) {
+            IO = "1";
+        } else {
+            IO = "0";
+        }
+        String ret = Title+", "+Author+", "+IO+", "+importance;
+        return ret;
+    }
 }
 
 

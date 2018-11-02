@@ -78,8 +78,41 @@ class BTNode
     }
 
     public boolean addBook(Book book){
+        books.First();
+        for(int i = 0; i < books.GetSize(); i++){
+
+            //if current book in books is after, the desired addBook
+            if(books.GetValue().getTitle().compareTo(book.getTitle()) > 0)
+            {books.InsertBefore(book); return true;}
+
+            //if current book in books is before the desired addBook
+            if(books.GetValue().getTitle().compareTo(book.getTitle()) < 0)
+            {books.Next(); }
+
+            if(books.GetValue().getTitle().compareTo(book.getTitle()) == 0)
+                return true;
+        }
         books.InsertAfter(book);
         return true;
+    }
+
+    public void impInsert(Book book){
+        books.First();
+        for(int i = 0; i < books.GetSize(); i++){
+            //if current book in book's importance is less than desired book
+            if(books.GetValue().getImportance() <= book.getImportance())
+            {
+                books.InsertBefore(book);
+                return;
+            }
+
+            //if current book in books' importance is greater than desired book
+            if(books.GetValue().getImportance() <= book.getImportance())
+            {
+                books.Next();
+            }
+        }
+        return;
     }
 
     public List<Book> getBooks() {

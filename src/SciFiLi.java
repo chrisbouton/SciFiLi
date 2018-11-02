@@ -1,3 +1,8 @@
+/**
+ * @author Andrew Hall Chris Bouton
+ *
+ */
+
 import java.util.Scanner;
 import java.util.regex.*;
 import java.util.Random;
@@ -7,7 +12,14 @@ public class SciFiLi {
 
     private static BT lib;
     private static int bookCount;
+    private static List<Book> impBooks;
+    private static List<Book> abcBooks;
+    private static int DEBUG;
+
     public static void main(String[] args)throws Exception{
+
+        // This website has good info for file reading and writing
+        // https://www.baeldung.com/java-write-to-file
 
         //log reader
         File log = new File("src//log.txt");
@@ -17,10 +29,8 @@ public class SciFiLi {
 
         //path for current days' log
         String path = "src//Logs//dayOut"+logNum+".txt";
-//        writer for dayOut#.txt
-//        System.out.println(path);
-//        FileWriter fileWriter = new FileWriter(path);
-//        PrintWriter printWriter = new PrintWriter(fileWriter);
+        //writer for dayOut#.txt
+        //System.out.println(path);
         /*
         source file and scanners
         */
@@ -30,24 +40,15 @@ public class SciFiLi {
         Scanner reader = new Scanner(input);//file);
         // takes user input
         Scanner UI = new Scanner(System.in);
-
-//        //update log
-//        FileWriter logWriter = new FileWriter("src//log.txt");
-//        PrintWriter logPrinter = new PrintWriter(logWriter);
-//        logPrinter.print(logNum+1);
-//        logPrinter.close();
-//
-//        //write to dayOut#.txt
-//        printWriter.println(logNum);
-//        printWriter.println("bookTitle, bookAuthor, Cio, importance");
-//        printWriter.close();
-
         /*
         Static variables
          */
 
         lib = new BT();
         bookCount = 0;
+        impBooks = new List<>();
+        abcBooks = new List<>();
+        DEBUG = 1;
 
         /*
         Main loop for reader
@@ -77,12 +78,17 @@ public class SciFiLi {
             currBook.setCheckedIn(CIn);
             //<<
             lib.insert(currBook);
+            impInsert(currBook);
+            abcInsert(currBook);
             //#Chris# lib.acbInsert(currBook);
             bookCount++;
             //System.out.println(currBook);
 
         }
-        lib.inorder();
+        if (DEBUG==1) {
+            System.out.println("Authors:");
+            lib.inorder();
+        }
 
         /*
         Main loop for UI menu
@@ -98,7 +104,6 @@ public class SciFiLi {
             System.out.println("6 : Add a new Book");
             System.out.println("7 : Run a Fire Drill");
             System.out.println("8 : Exit the program");
-            System.out.println();
             /*
             menu executables
             */
@@ -157,9 +162,10 @@ public class SciFiLi {
                     onlyCheckedIn = true;
                 }
                 else onlyCheckedIn = false;
-                System.out.println("Would you like to display lists by Title or Author?");
+                System.out.println("Would you like to display lists by Title, Author, or Importance?");
                 System.out.println("1 : Title");
                 System.out.println("2 : Author");
+                System.out.println("3 : Importance");
                 System.out.println();
                 String listChoice = UI.next().trim();
                 if(listChoice.equals("1")){
@@ -181,6 +187,17 @@ public class SciFiLi {
                         System.out.println("All Books sorted by Author: ");
                         System.out.println();
                         printAllNodes();
+                    }
+                }
+                else if(listChoice.equals("3")){
+                    if(onlyCheckedIn){
+                        System.out.println("Checked in Books by Importance: ");
+                        System.out.println();
+                    }
+                    else{
+                        System.out.println("All Books sorted by Importance: ");
+                        System.out.println();
+                        impPrint();
                     }
                 }
                 else{
@@ -310,6 +327,19 @@ public class SciFiLi {
             System.out.println("Thank you user!");
         }
         System.out.println("Goodbye User");
+//        String newPath = "src//Logs//dayOut"+(logNum+1)+".txt";
+//        FileWriter fileWriter = new FileWriter(newPath);
+//        PrintWriter printWriter = new PrintWriter(fileWriter);
+//        //update log
+//        FileWriter logWriter = new FileWriter("src//log.txt");
+//        PrintWriter logPrinter = new PrintWriter(logWriter);
+//        logPrinter.print(logNum+1);
+//        logPrinter.close();
+
+//        //write to dayOut#.txt
+//        printWriter.println(logNum);
+//        printWriter.println("bookTitle, bookAuthor, Cio, importance");
+//        printWriter.close();
     }
 
     static void printAllNodes(){
@@ -318,7 +348,8 @@ public class SciFiLi {
     }
 
     static void printAllNode(BTNode n)throws NullPointerException{
-        System.out.println("Book(s) by: "+n.getAuthor());
+        String aut = n.getAuthor();
+        System.out.println("Book(s) by: "+aut);
         n.printBooks();
         if(n.getLeft()!=null){
             //System.out.println("left");
@@ -328,5 +359,53 @@ public class SciFiLi {
             //System.out.println("right");
             printAllNode(n.getRight());
         }
+    }
+
+    private static void impInsert(Book book){
+        impBooks.First();
+        for(int i = 0; i < impBooks.GetSize(); i++){
+            //if current book in book's importance is less than desired book
+            if(impBooks.GetValue().getImportance() <= book.getImportance())
+            {
+                impBooks.InsertBefore(book);
+                return;
+            }
+
+            //if current book in books' importance is greater than desired book
+            if(impBooks.GetValue().getImportance() <= book.getImportance())
+            {
+                impBooks.Next();
+            }
+        }
+        return;
+    }
+
+    private static void impPrint(){
+        System.out.println("impPrint");
+        impBooks.First();
+        while(impBooks.GetValue()!=null) {
+            Book cur = impBooks.GetValue();
+            System.out.println();
+            impBooks.Next();
+        }
+    }
+
+    public static boolean abcInsert(Book book){
+        impBooks.First();
+        for(int i = 0; i < impBooks.GetSize(); i++){
+
+            //if current book in impBooks is after, the desired addBook
+            if(impBooks.GetValue().getTitle().compareTo(book.getTitle()) > 0)
+            {impBooks.InsertBefore(book); return true;}
+
+            //if current book in impBooks is before the desired addBook
+            if(impBooks.GetValue().getTitle().compareTo(book.getTitle()) < 0)
+            {impBooks.Next(); }
+
+            if(impBooks.GetValue().getTitle().compareTo(book.getTitle()) == 0)
+                return true;
+        }
+        impBooks.InsertAfter(book);
+        return true;
     }
 }
