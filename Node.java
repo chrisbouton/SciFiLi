@@ -26,11 +26,11 @@ class Node<Type> {
 	}
 
 	// accessors and mutators for the link component
-	public Node<DataType> getLink(){
+	public Node<Type> getLink(){
 		return this.link;
 	}
 
-	public void setLink(Node<DataType> link){
+	public void setLink(Node<Type> link){
 		this.link = link;
 	}
 }
