@@ -96,24 +96,24 @@ class BTNode
         return true;
     }
 
-    public void impInsert(Book book){
-        books.First();
-        for(int i = 0; i < books.GetSize(); i++){
-            //if current book in book's importance is less than desired book
-            if(books.GetValue().getImportance() <= book.getImportance())
-            {
-                books.InsertBefore(book);
-                return;
-            }
-
-            //if current book in books' importance is greater than desired book
-            if(books.GetValue().getImportance() <= book.getImportance())
-            {
-                books.Next();
-            }
-        }
-        return;
-    }
+//    public void impInsert(Book book){
+//        books.First();
+//        for(int i = 0; i < books.GetSize(); i++){
+//            //if current book in book's importance is less than desired book
+//            if(books.GetValue().getImportance() <= book.getImportance())
+//            {
+//                books.InsertBefore(book);
+//                return;
+//            }
+//
+//            //if current book in books' importance is greater than desired book
+//            if(books.GetValue().getImportance() <= book.getImportance())
+//            {
+//                books.Next();
+//            }
+//        }
+//        return;
+//    }
 
     public List<Book> getBooks() {
         return books;

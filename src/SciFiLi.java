@@ -48,7 +48,7 @@ public class SciFiLi {
         bookCount = 0;
         impBooks = new List<>();
         abcBooks = new List<>();
-        DEBUG = 1;
+        DEBUG = 2;
 
         /*
         Main loop for reader
@@ -77,8 +77,11 @@ public class SciFiLi {
             Book currBook = new Book(title, author, importance);
             currBook.setCheckedIn(CIn);
             //<<
+            //sorted by author
             lib.insert(currBook);
+            //sorted by importance
             impInsert(currBook);
+            //sorted by title
             abcInsert(currBook);
             //#Chris# lib.acbInsert(currBook);
             bookCount++;
@@ -108,7 +111,7 @@ public class SciFiLi {
             menu executables
             */
             //>>
-            String UIin = UI.nextLine();
+            String UIin = UI.next();
             // #1# search
             if(UIin.equals("1")){
                 System.out.println("You selected to: ");
@@ -193,11 +196,12 @@ public class SciFiLi {
                     if(onlyCheckedIn){
                         System.out.println("Checked in Books by Importance: ");
                         System.out.println();
+                        impPrint(onlyCheckedIn);
                     }
                     else{
                         System.out.println("All Books sorted by Importance: ");
                         System.out.println();
-                        impPrint();
+                        impPrint(onlyCheckedIn);
                     }
                 }
                 else{
@@ -277,14 +281,18 @@ public class SciFiLi {
                     System.out.println("The Imortal Cthulhu presents you");
                     System.out.println("a Tome of Abyssal Knowlege: ");
                     Random rand = new Random();
-                    int tLen = 8+rand.nextInt(8);
+                    int tLen = 9+rand.nextInt(10);
                     String title = "";
+                    char T = (char) (rand.nextInt(26) + 'A');
+                    title += T;
                     for(int i = 0; i < tLen; i++){
                         char c = (char) (rand.nextInt(26) + 'a');
                         title += c;
                     }
                     int aLen = 4+rand.nextInt(11);
                     String author = "";
+                    char A = (char) (rand.nextInt(26) + 'A');
+                    author += A;
                     for(int i = 0; i < aLen; i++){
                         char c = (char) (rand.nextInt(26) + 'a');
                         author += c;
@@ -313,6 +321,13 @@ public class SciFiLi {
                 Random rand = new Random();
                 int numOfBook = rand.nextInt((bookCount/2)+1);
                 System.out.println("You managed to save "+numOfBook+" books");
+                System.out.println();
+
+                impBooks.First();
+                for(int i=0;i<numOfBook;i++){
+                    System.out.println((i+1)+"..."+impBooks.GetValue());
+                    impBooks.Next();
+                }
                 System.out.println("Im sorry, I have not implemented this feature yet");
             }
             // #8# exit
@@ -362,30 +377,45 @@ public class SciFiLi {
     }
 
     private static void impInsert(Book book){
+        int impSize = impBooks.GetSize();
+        System.out.println(impSize);
         impBooks.First();
-        for(int i = 0; i < impBooks.GetSize(); i++){
-            //if current book in book's importance is less than desired book
-            if(impBooks.GetValue().getImportance() <= book.getImportance())
-            {
-                impBooks.InsertBefore(book);
-                return;
-            }
-
-            //if current book in books' importance is greater than desired book
-            if(impBooks.GetValue().getImportance() <= book.getImportance())
-            {
-                impBooks.Next();
+        if(impSize==0){
+            impBooks.InsertAfter(book);
+            System.out.println("insert first one");
+            return;
+        }
+        else {
+            int bookImportance = book.getImportance();
+            for (int i = 0; i < impSize; i++) {
+                int currImportance = impBooks.GetValue().getImportance();
+                System.out.println("Current: "+currImportance);
+                System.out.println("Book: "+ bookImportance);
+                System.out.println();
+                if (bookImportance > currImportance) {
+                    impBooks.Next();
+                }
+                //if current book in book by importance is greater than desired book
+                if (bookImportance < currImportance) {
+                    impBooks.InsertBefore(book);
+                    //System.out.println("## "+book.getImportance() + ".. " + impBooks.GetValue().getImportance());
+                    return;
+                }
             }
         }
+        impBooks.InsertAfter(book);
         return;
     }
 
-    private static void impPrint(){
+    private static void impPrint(boolean checkedInonly){
         System.out.println("impPrint");
         impBooks.First();
-        while(impBooks.GetValue()!=null) {
-            Book cur = impBooks.GetValue();
-            System.out.println();
+//        while(impBooks.GetValue()!=null) {
+//            System.out.println(impBooks.GetValue());
+//            impBooks.Next();
+//        }
+        for(int i=0; i<impBooks.GetSize();i++){
+            System.out.println((i+1)+"..."+impBooks.GetValue());
             impBooks.Next();
         }
     }

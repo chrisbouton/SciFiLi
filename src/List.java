@@ -9,7 +9,7 @@
 // the List class
 public class List<Type>{
     // fields 
-	public static final int MAX_SIZE = 50;
+	public static final int MAX_SIZE = 200;
     
     // three references
 	private Node<Type> head;
