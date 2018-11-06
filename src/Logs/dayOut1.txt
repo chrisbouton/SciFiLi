@@ -1,5 +1,5 @@
 Lord Of The Rings Trilogy, Tolkien, 0, 2
-Hitchhiker's Guide To The Galaxy, AdamsD, 0, 1
+Hitchhiker's Guide To The Galaxy, AdamsD, 1, 1
 Ender's Game, Card, 0, 6
 Dune Chronicles, Herbert, 1, 27
 Song Of Ice And Fire Series, Martin, 1, 54
@@ -8,7 +8,7 @@ Fahrenheit 451, Bradbury, 0, 14
 Foundation Trilogy, Asimov, 0, 13
 Brave New World, Huxley, 0, 53
 American Gods, Gaiman, 0, 15
-Princess Bride, Goldman, 0, 4
+Princess Bride, Goldman, 1, 4
 Wheel Of Time Series, Jordan, 1, 55
 Animal Farm, Orwell, 1, 51
 Neuromancer, Gibson, 1, 86

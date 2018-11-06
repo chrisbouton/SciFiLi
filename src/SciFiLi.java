@@ -119,7 +119,7 @@ public class SciFiLi {
                 System.out.println();
                 System.out.println("Who is the Author of the book?");
                 System.out.println();
-                String currAuthor = UI.next().trim();
+                String currAuthor = UI.next().trim().toLowerCase();
                 System.out.println("Would you like to: ");
                 System.out.println("1 : Look for a specific a title");
                 System.out.println("2 : See all books by "+currAuthor);
@@ -141,11 +141,7 @@ public class SciFiLi {
                 else if(searchChoice.equals("2")){
                     System.out.println("The books by "+currAuthor+" are:");
                     System.out.println();
-
-                    System.out.println("Im sorry, I have not implemented this feature yet");
-                    /*
-                    * Print the books
-                    */
+                    printAuthor(currAuthor);
                 }
                 else{
                     System.out.println("Invalid entry");
@@ -175,10 +171,12 @@ public class SciFiLi {
                     if(onlyCheckedIn){
                         System.out.println("Checked in Books by Title: ");
                         System.out.println();
+                        abcPrint(onlyCheckedIn);
                     }
                     else{
                         System.out.println("All Books sorted by Title: ");
                         System.out.println();
+                        abcPrint(onlyCheckedIn);
                     }
                 }
                 else if(listChoice.equals("2")){
@@ -207,7 +205,6 @@ public class SciFiLi {
                 else{
                     System.out.println("Invalid entry");
                 }
-                System.out.println("Im sorry, I have not implemented this feature yet");
 
             }
             // #3# check in
@@ -275,11 +272,13 @@ public class SciFiLi {
                     Book bookAdd = new Book(currTitle,currAuthor,currImportance);
                     bookAdd.setCheckedIn(true);
                     lib.insert(bookAdd);
+                    impInsert(bookAdd);
+                    abcInsert(bookAdd);
                 }
                 // #c# lolz
                 else if(nbChoice.equals("2")){
-                    System.out.println("The Imortal Cthulhu presents you");
-                    System.out.println("a Tome of Abyssal Knowlege: ");
+                    System.out.println("The Immortal Cthulhu presents you");
+                    System.out.println("a Tome of Abyssal Knowledge: ");
                     Random rand = new Random();
                     int tLen = 9+rand.nextInt(10);
                     String title = "";
@@ -306,6 +305,9 @@ public class SciFiLi {
                     System.out.println("Continue? y/n");
                     String cont = UI.next().trim();
                     if(!(cont.equals("y")||cont.equals("Y"))){
+                        System.out.println("Your brain melts at the sound the book");
+                        System.out.println("made when it materialized from the bowels of");
+                        System.out.println("Yogsageroth.");
                         break;
                     }
                 }
@@ -322,13 +324,20 @@ public class SciFiLi {
                 int numOfBook = rand.nextInt((bookCount/2)+1);
                 System.out.println("You managed to save "+numOfBook+" books");
                 System.out.println();
+                Book[] saved = new Book[numOfBook];
 
                 impBooks.First();
-                for(int i=0;i<numOfBook;i++){
-                    System.out.println((i+1)+"..."+impBooks.GetValue());
+                int i=0;
+                while(i<numOfBook){
+                    Book curr = impBooks.GetValue();
+                    if(curr.checkedIn){
+                        saved[i]= curr;
+                        System.out.println((i+1)+"..."+curr);
+                        i++;
+                    }
                     impBooks.Next();
                 }
-                System.out.println("Im sorry, I have not implemented this feature yet");
+                fireLog(saved);
             }
             // #8# exit
             else if(UIin.equals("8")){
@@ -376,66 +385,124 @@ public class SciFiLi {
         }
     }
 
+    private static void printAuthor(String author){
+        lib.goRoot();
+        printAuthor(author,lib.current);
+    }
+    private static void printAuthor(String author,BTNode n){
+        if(n.getAuthor().toLowerCase().compareTo(author)==0){
+            n.printBooks();
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)>0){
+            printAuthor(author,n.getRight());
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)<0){
+            printAuthor(author,n.getLeft());
+        }
+    }
+
     private static void impInsert(Book book){
         int impSize = impBooks.GetSize();
-        System.out.println(impSize);
+        //System.out.println(impSize);
         impBooks.First();
         if(impSize==0){
             impBooks.InsertAfter(book);
-            System.out.println("insert first one");
             return;
         }
         else {
             int bookImportance = book.getImportance();
             for (int i = 0; i < impSize; i++) {
                 int currImportance = impBooks.GetValue().getImportance();
-                System.out.println("Current: "+currImportance);
-                System.out.println("Book: "+ bookImportance);
-                System.out.println();
-                if (bookImportance > currImportance) {
-                    impBooks.Next();
+                if(DEBUG==2) {
+                    System.out.println("Current: " + currImportance);
+                    System.out.println("Book: " + bookImportance);
+                    System.out.println();
                 }
+
                 //if current book in book by importance is greater than desired book
                 if (bookImportance < currImportance) {
                     impBooks.InsertBefore(book);
-                    //System.out.println("## "+book.getImportance() + ".. " + impBooks.GetValue().getImportance());
                     return;
                 }
+                impBooks.Next();
+            }
+            impBooks.InsertAfter(book);
+            return;
+        }
+
+    }
+
+    private static void impPrint(boolean checkedInOnly){
+        System.out.println("impPrint");
+        impBooks.First();
+        int j=0;
+        for(int i=0; i<impBooks.GetSize();i++){
+//            System.out.println((i+1)+"..."+impBooks.GetValue());
+//            impBooks.Next();
+            if(checkedInOnly){
+                Book curr = impBooks.GetValue();
+                boolean ci = curr.checkedIn;
+                if(ci){
+                    System.out.println(j+"..."+curr);
+                    j++;
+                }
+                impBooks.Next();
+            }
+            else{
+                System.out.println((i+1)+"..."+impBooks.GetValue());
+                impBooks.Next();
             }
         }
-        impBooks.InsertAfter(book);
+    }
+
+    private static void abcInsert(Book book){
+        abcBooks.First();
+        for(int i = 0; i < abcBooks.GetSize(); i++){
+            //if current book in abcBooks is after, the desired addBook
+            if(abcBooks.GetValue().getTitle().compareTo(book.getTitle()) > 0)
+            {
+                abcBooks.InsertBefore(book);
+                return;
+            }
+            //if current book in abcBooks is before the desired addBook
+            if(abcBooks.GetValue().getTitle().compareTo(book.getTitle()) < 0)
+            {
+                abcBooks.Next();
+            }
+            if(abcBooks.GetValue().getTitle().compareTo(book.getTitle()) == 0)
+                return;
+        }
+        abcBooks.InsertAfter(book);
         return;
     }
 
-    private static void impPrint(boolean checkedInonly){
-        System.out.println("impPrint");
-        impBooks.First();
-//        while(impBooks.GetValue()!=null) {
-//            System.out.println(impBooks.GetValue());
-//            impBooks.Next();
-//        }
-        for(int i=0; i<impBooks.GetSize();i++){
-            System.out.println((i+1)+"..."+impBooks.GetValue());
-            impBooks.Next();
+    private static void abcPrint(boolean checkedInOnly){
+        System.out.println("abcPrint");
+        abcBooks.First();
+        int j=0;
+        for(int i=0; i<abcBooks.GetSize();i++){
+            if(checkedInOnly){
+                Book curr = abcBooks.GetValue();
+                boolean ci = curr.checkedIn;
+                if(ci){
+                    System.out.println(j+"..."+curr);
+                }
+                abcBooks.Next();
+            }
+            else{
+                System.out.println((i+1)+"..."+abcBooks.GetValue());
+                abcBooks.Next();
+            }
+
         }
+
     }
 
-    public static boolean abcInsert(Book book){
-        impBooks.First();
-        for(int i = 0; i < impBooks.GetSize(); i++){
+    private static void fireLog(Book[] saved){
+        //unf
+    }
 
-            //if current book in impBooks is after, the desired addBook
-            if(impBooks.GetValue().getTitle().compareTo(book.getTitle()) > 0)
-            {impBooks.InsertBefore(book); return true;}
+    private static void search(Book book){
 
-            //if current book in impBooks is before the desired addBook
-            if(impBooks.GetValue().getTitle().compareTo(book.getTitle()) < 0)
-            {impBooks.Next(); }
-
-            if(impBooks.GetValue().getTitle().compareTo(book.getTitle()) == 0)
-                return true;
-        }
-        impBooks.InsertAfter(book);
-        return true;
     }
 }
