@@ -1,0 +1,18 @@
+to do: search 1,1
+3,4,5
+3-check in is search then check in a book
+4-check out is search then check out the book
+5-get an array of all books that are checked out and check in a random number of them
+
+output to log an eod files// andrew will do this att the end it is already mostly done but turned off due to debuging the rest of the code
+//
+eod needs to read from one specific list which we are doing cio on
+
+update log to use dates instead of a number
+just kill me please i am so tired
+
+take snippits of what each thing does
+
+make the UML diagrams -
+
+make class diagrams and activiity digrams
