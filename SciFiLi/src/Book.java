@@ -61,7 +61,7 @@ public class Book {
             else{
 
                 System.out.println(Title + " has been checked out.");
-                checkedIn = false;
+                checkedIn = true;
             }
             return true;
         }

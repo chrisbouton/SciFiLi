@@ -196,7 +196,6 @@ public class SciFiLi {
                 else{
                     System.out.println("Invalid entry");
                 }
-
             }
             // #3# check in
             else if(UIin.equals("3")){
@@ -208,11 +207,19 @@ public class SciFiLi {
                 UI.next();
                 if(printAuthor(currAuthor,false)){
                     System.out.println("What is the Title of the Book?");
-                    String currTitle = UI.nextLine().trim();
-                    checkIO(true,currTitle,currAuthor);
+                    System.out.println("Use _ for spaces");
+                    String currTitle = UI.next();
+                    currTitle = currTitle.replaceAll("[_]"," ");
+                    System.out.println(currTitle);
+                    if(!checkIO(true,currTitle,currAuthor)){
+                        System.out.println("True");
+                    }
+                    else{
+                        System.out.println("False");
+                    }
                 }
                 else{
-                    System.out.println("No books to check in.");
+                    System.out.println("No books to check out.");
                 }
             }
             // #4# check out
@@ -222,15 +229,16 @@ public class SciFiLi {
                 System.out.println("Who is the Author of the book?");
                 String currAuthor = UI.next().trim();
                 if(printAuthor(currAuthor,true)){
-                    System.out.println("What is the Number of the Book?");
+                    System.out.println("What is the Title of the Book?");
+                    System.out.println("Use _ for spaces");
                     String currTitle = UI.next();
                     currTitle = currTitle.replaceAll("[_]"," ");
                     System.out.println(currTitle);
-                    if(checkIO(false,currTitle,currAuthor)){
+                    if(!checkIO(false,currTitle,currAuthor)){
                         System.out.println("True");
                     }
                     else{
-                        System.out.println("false");
+                        System.out.println("False");
                     }
                 }
                 else{
@@ -242,10 +250,20 @@ public class SciFiLi {
             else if(UIin.equals("5")){
                 System.out.println("You selected to: ");
                 System.out.println("Process the returns.");
+                System.out.println();
                 Random rand = new Random();
-                // int numToReturn = rand.nextInt(# of checked out books)
+                //call to get up to 15 books to return
+                int numToReturn = rand.nextInt(15)+1;
                 // list returns the first so many books to return
-                System.out.println("Im sorry, I have not implemented this feature yet");
+                System.out.println(numToReturn+" book(s) were returned: ");
+                Book[] returns = getCheckedOut(numToReturn);
+                for(int i=0;i<returns.length;i++){
+                    String currTitle = returns[i].getTitle();
+                    String currAuthor = returns[i].getAuthor();
+                    checkIO(true,currTitle,currAuthor);
+                    System.out.println((i+1)+"..."+returns[i]);
+                }
+                System.out.println();
             }
             // #6# add
             else if(UIin.equals("6")){
@@ -358,7 +376,7 @@ public class SciFiLi {
                     }
                     impBooks.Next();
                 }
-                fireLog(saved);
+                //fireLog(saved);
             }
             // #8# exit
             else if(UIin.equals("8")){
@@ -578,13 +596,13 @@ public class SciFiLi {
         }
     }
 
-    private static void fireLog(Book[] saved){
+    //private static void fireLog(Book[] saved){
         //unf
-    }
+    //}
 
     private static boolean checkIO(boolean cio, String title, String author){
-        checkIOAbc(cio,title);
-        checkIOImp(cio,title);
+        //checkIOAbc(cio,title);
+        //checkIOImp(cio,title);
         return checkIOAut(cio,title,author);
     }
 
@@ -594,7 +612,10 @@ public class SciFiLi {
     }
     private static boolean checkIOAut(boolean cio, String title, String author,BTNode n){
         if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())==0){
-            return n.checkBook(cio,title);
+            System.out.println("AUT");
+            boolean ret = n.checkBook(cio,title);
+            //System.out.println(ret);
+            return ret;
         }
         else if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())>0){
             if(n.getLeft()==null){
@@ -618,8 +639,10 @@ public class SciFiLi {
     private static void checkIOAbc(boolean cio, String title){
         abcBooks.First();
         for(int i=0; i<abcBooks.GetSize();i++){
-            if(abcBooks.GetValue().getTitle().equals(title)){
+            if(abcBooks.GetValue().getTitle().toLowerCase().equals(title.toLowerCase())){
                 abcBooks.GetValue().setCheckedIn(cio);
+                System.out.println("ABC");
+                return;
             }
             else{
                 abcBooks.Next();
@@ -630,8 +653,10 @@ public class SciFiLi {
     private static void checkIOImp(boolean cio, String title){
         impBooks.First();
         for(int i=0; i<impBooks.GetSize();i++){
-            if(impBooks.GetValue().getTitle().equals(title)){
+            if(impBooks.GetValue().getTitle().toLowerCase().equals(title.toLowerCase())){
                 impBooks.GetValue().setCheckedIn(cio);
+                System.out.println("IMP");
+                return;
             }
             else{
                 impBooks.Next();
@@ -639,8 +664,95 @@ public class SciFiLi {
         }
     }
 
-//    private static String getTitle(String titleNum){
-//
-//    }
+    private static Book[] getCheckedOut(){
+        int size = impBooks.GetSize();
+        impBooks.First();
+        Book[] preCheckedOut = new Book[size];
+        int j = 0;
+        for(int i=0;i<size;i++){
+            if(!impBooks.GetValue().getcheckedIn()){
+                preCheckedOut[j]=impBooks.GetValue();
+                j++;
+            }
+            impBooks.Next();
+        }
+        Book[] postCheckedOut = new Book[j];
+        for(int k=0;k<j;k++){
+            postCheckedOut[k]=preCheckedOut[k];
+        }
+        return postCheckedOut;
+    }
+
+    private static Book[] getCheckedOut(int lim){
+        int size = impBooks.GetSize();
+        impBooks.First();
+        Book[] preCheckedOut = new Book[size];
+        int j = 0;//counts checked out
+        //make a list with size of all books
+        //filled only with checked out books
+        for(int i=0;i<size;i++){
+            if(!impBooks.GetValue().getcheckedIn()){
+                preCheckedOut[j]=impBooks.GetValue();
+                j++;
+            }
+            impBooks.Next();
+        }
+        //there are more checked out books than lim
+        if(j>lim){
+            Random rand = new Random();
+            String indecies = ""+rand.nextInt(j);
+            for(int n=0;n<(lim-1);n++){
+                indecies +=","+rand.nextInt(j);
+            }
+            System.out.println(indecies);
+            String[] inds = indecies.split(",");
+            int[] ints = new int[inds.length];
+            for(int m=0;m<inds.length;m++){
+                ints[m]= Integer.parseInt(inds[m]);
+            }
+            for(int k=0;k<ints.length;k++){
+                for(int h=k+1;h<ints.length;h++){
+                    if(ints[k]==ints[h]){
+                        ints[h]+=1;
+                    }
+                }
+            }
+            //add the books to the list
+            Book[] postCheckedOut = new Book[lim];
+            for (int k = 0; k < lim; k++) {
+                int thisIndex = ints[k];
+                postCheckedOut[k] = preCheckedOut[thisIndex];
+            }
+            return postCheckedOut;
+        }
+        // there are less or equal checked out books than lim
+        else {
+            Book[] postCheckedOut = new Book[j];
+            for (int k = 0; k < j; k++) {
+                postCheckedOut[k] = preCheckedOut[k];
+            }
+            return postCheckedOut;
+        }
+    }
+
+    private static Book[] getCheckedIn(){
+        int size = impBooks.GetSize();
+        impBooks.First();
+        Book[] preCheckedOut = new Book[size];
+        int j = 0;
+        for(int i=0;i<size;i++){
+            if(impBooks.GetValue().getcheckedIn()){
+                preCheckedOut[j]=impBooks.GetValue();
+                j++;
+            }
+            impBooks.Next();
+        }
+        Book[] postCheckedOut = new Book[j];
+        for(int k=0;k<j;k++){
+            postCheckedOut[k]=preCheckedOut[k];
+        }
+        return postCheckedOut;
+    }
+
 
 }

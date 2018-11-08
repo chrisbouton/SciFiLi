@@ -123,7 +123,7 @@ class BTNode
             }
             books.Next();
         }
-        System.out.println(j);
+        //System.out.println(j);
         if(j==0){
             return false;
         }
