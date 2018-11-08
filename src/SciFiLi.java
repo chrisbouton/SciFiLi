@@ -48,7 +48,7 @@ public class SciFiLi {
         bookCount = 0;
         impBooks = new List<>();
         abcBooks = new List<>();
-        DEBUG = 2;
+        DEBUG = 0;
 
         /*
         Main loop for reader
@@ -75,7 +75,7 @@ public class SciFiLi {
                 CIn = false;
             }
             Book currBook = new Book(title, author, importance);
-            currBook.setCheckedIn(CIn);
+            currBook.hardCheckIn(CIn);
             //<<
             //sorted by author
             lib.insert(currBook);
@@ -99,14 +99,14 @@ public class SciFiLi {
         System.out.println("Welcome!");
         while (true){
             System.out.println("Menu Options: ");
-            System.out.println("1 : Search for a book");
-            System.out.println("2 : Access Lists");
-            System.out.println("3 : Check in a book");
-            System.out.println("4 : Check out a book");
-            System.out.println("5 : Process the returns");
-            System.out.println("6 : Add a new Book");
-            System.out.println("7 : Run a Fire Drill");
-            System.out.println("8 : Exit the program");
+            System.out.println("1 : Search for a book.");
+            System.out.println("2 : Access Lists.");
+            System.out.println("3 : Check in a book.");
+            System.out.println("4 : Check out a book.");
+            System.out.println("5 : Process the returns.");
+            System.out.println("6 : Add a new Book.");
+            System.out.println("7 : Run a Fire Drill.");
+            System.out.println("8 : Exit the program.");
             /*
             menu executables
             */
@@ -115,32 +115,26 @@ public class SciFiLi {
             // #1# search
             if(UIin.equals("1")){
                 System.out.println("You selected to: ");
-                System.out.println("Search for a book");
+                System.out.println("Search for a book.");
                 System.out.println();
                 System.out.println("Who is the Author of the book?");
-                System.out.println();
-                String currAuthor = UI.next().trim().toLowerCase();
+                String currAuthor = UI.next().trim();
                 System.out.println("Would you like to: ");
                 System.out.println("1 : Look for a specific a title");
                 System.out.println("2 : See all books by "+currAuthor);
-                System.out.println();
                 String searchChoice = UI.next().trim();
 
                 if(searchChoice.equals("1")){
                     System.out.println("What is the Title of the Book?");
-                    System.out.println();
                     String bookTitle = UI.next().trim();
 
                     System.out.println("Im sorry, I have not implemented this feature yet");
                     System.out.println("Unable to find: "+bookTitle);
-                    System.out.println();
                     /*
                     * find the book and see if it is in or checked out
                     */
                 }
                 else if(searchChoice.equals("2")){
-                    System.out.println("The books by "+currAuthor+" are:");
-                    System.out.println();
                     printAuthor(currAuthor);
                 }
                 else{
@@ -150,17 +144,14 @@ public class SciFiLi {
             // #2# lists
             else if(UIin.equals("2")){
                 System.out.println("You selected to: ");
-                System.out.println("Access Lists");
+                System.out.println("Access Lists.");
                 System.out.println();
                 System.out.println("Do you want: ");
                 System.out.println("1 : Only books that are checked in");
                 System.out.println("2 : All books in the system");
                 String cioChoice = UI.next().trim();
                 boolean onlyCheckedIn;
-                if(cioChoice.equals("1")){
-                    onlyCheckedIn = true;
-                }
-                else onlyCheckedIn = false;
+                onlyCheckedIn = cioChoice.equals("1");
                 System.out.println("Would you like to display lists by Title, Author, or Importance?");
                 System.out.println("1 : Title");
                 System.out.println("2 : Author");
@@ -212,40 +203,37 @@ public class SciFiLi {
                 System.out.println("You selected to: ");
                 System.out.println("Check in a book");
                 System.out.println();
-
                 System.out.println("Who is the Author of the book?");
-                System.out.println();
                 String currAuthor = UI.next().trim();
-                System.out.println("What is the Title of the Book?");
-                System.out.println();
-                String bookTitle = UI.next().trim();
-
-                /*
-                find the book and check it in
-                 */
-                System.out.println("Im sorry, I have not implemented this feature yet");
+                if(printAuthor(currAuthor,false)){
+                    System.out.println("What is the Title of the Book?");
+                    String currTitle = UI.next().trim();
+                    checkIO(true,currTitle,currAuthor);
+                }
+                else{
+                    System.out.println("No books to check in.");
+                }
             }
             // #4# check out
             else if(UIin.equals("4")){
                 System.out.println("You selected to: ");
-                System.out.println("Check out a book");
-                System.out.println();
-
+                System.out.println("Check out a book\n");
                 System.out.println("Who is the Author of the book?");
-                System.out.println();
                 String currAuthor = UI.next().trim();
-                System.out.println("What is the Title of the Book?");
-                System.out.println();
-                String bookTitle = UI.next().trim();
-                /*
-                find the book and check it out
-                 */
-                System.out.println("Im sorry, I have not implemented this feature yet");
+                if(printAuthor(currAuthor,true)){
+                    System.out.println("What is the Title of the Book?");
+                    String currTitle = UI.nextLine();
+                    checkIO(false,currTitle,currAuthor);
+                }
+                else{
+                    System.out.println("No books to check out.");
+                }
+
             }
             // #5# returns
             else if(UIin.equals("5")){
                 System.out.println("You selected to: ");
-                System.out.println("Process the returns");
+                System.out.println("Process the returns.");
                 Random rand = new Random();
                 // int numToReturn = rand.nextInt(# of checked out books)
                 // list returns the first so many books to return
@@ -301,6 +289,8 @@ public class SciFiLi {
                     Book bookAdd = new Book(title,author,currImportance);
                     bookAdd.setCheckedIn(true);
                     lib.insert(bookAdd);
+                    abcInsert(bookAdd);
+                    impInsert(bookAdd);
 
                     System.out.println("Continue? y/n");
                     String cont = UI.next().trim();
@@ -366,12 +356,12 @@ public class SciFiLi {
 //        printWriter.close();
     }
 
-    static void printAllNodes(){
+    private static void printAllNodes(){
         lib.goRoot();
         printAllNode(lib.current);
     }
 
-    static void printAllNode(BTNode n)throws NullPointerException{
+    private static void printAllNode(BTNode n)throws NullPointerException{
         String aut = n.getAuthor();
         System.out.println("Book(s) by: "+aut);
         n.printBooks();
@@ -385,19 +375,79 @@ public class SciFiLi {
         }
     }
 
+    // print the author if you care about checked in/out
+    private static boolean printAuthor(String author,boolean cio){
+        lib.goRoot();
+        return printAuthor(author.toLowerCase(),lib.current,cio);
+    }
+    private static boolean printAuthor(String author,BTNode n,boolean cio){
+        if(n.getAuthor().toLowerCase().compareTo(author)==0){
+            System.out.println("The book(s) by "+author+" are:");
+            boolean ret = n.printBooks(cio);
+            System.out.println();
+            return ret;
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)<0){
+            if(n.getRight()==null){
+                System.out.println("Author: "+author+" not found");
+                return false;
+            }
+            else {
+                printAuthor(author, n.getRight(),cio);
+            }
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)>0){
+            if(n.getLeft()==null){
+                System.out.println("Author: "+author+" not found");
+                return false;
+            }
+            else {
+                printAuthor(author, n.getLeft(),cio);
+            }
+        }
+        if(n.getLeft()==null&&n.getRight()==null){
+            System.out.println("Author: "+author+" not found");
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    // print the author if you don't care about checked in/out
     private static void printAuthor(String author){
         lib.goRoot();
-        printAuthor(author,lib.current);
+        printAuthor(author.toLowerCase(),lib.current);
     }
     private static void printAuthor(String author,BTNode n){
         if(n.getAuthor().toLowerCase().compareTo(author)==0){
+            System.out.println("The book(s) by "+author+" are:");
+            System.out.println();
             n.printBooks();
-        }
-        else if(n.getAuthor().toLowerCase().compareTo(author)>0){
-            printAuthor(author,n.getRight());
+            System.out.println();
+            return;
         }
         else if(n.getAuthor().toLowerCase().compareTo(author)<0){
-            printAuthor(author,n.getLeft());
+            if(n.getRight()==null){
+                System.out.println("Author: "+author+" not found");
+                return;
+            }
+            else {
+                printAuthor(author, n.getRight());
+            }
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)>0){
+            if(n.getLeft()==null){
+                System.out.println("Author: "+author+" not found");
+                return;
+            }
+            else {
+                printAuthor(author, n.getLeft());
+            }
+        }
+        if(n.getLeft()==null&&n.getRight()==null){
+            System.out.println("Author: "+author+" not found");
+            return;
         }
     }
 
@@ -486,6 +536,7 @@ public class SciFiLi {
                 boolean ci = curr.checkedIn;
                 if(ci){
                     System.out.println(j+"..."+curr);
+                    j++;
                 }
                 abcBooks.Next();
             }
@@ -493,16 +544,67 @@ public class SciFiLi {
                 System.out.println((i+1)+"..."+abcBooks.GetValue());
                 abcBooks.Next();
             }
-
         }
-
     }
 
     private static void fireLog(Book[] saved){
         //unf
     }
 
-    private static void search(Book book){
+    private static void checkIO(boolean cio, String title, String author){
+        checkIOAut(cio,title,author);
+        checkIOAbc(cio,title);
+        checkIOImp(cio,title);
+    }
+
+    private static void checkIOAut(boolean cio, String title, String author){
+        lib.goRoot();
+        checkIOAut(cio,title,author,lib.current);
+    }
+    private static void checkIOAut(boolean cio, String title, String author,BTNode n){
+        if(n.getAuthor().toLowerCase().compareTo(author)==0){
+            n.checkBook(cio,title);
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)>0){
+            if(n.getLeft()==null){
+                System.out.println("Author: "+author+" not found");
+            }
+            else {
+                checkIOAut(cio,title,author,n.getLeft());
+            }
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author)<0){
+            if(n.getRight()==null){
+                System.out.println("Author: "+author+" not found");
+            }
+            else {
+                checkIOAut(cio,title,author,n.getRight());
+            }
+        }
+    }
+
+    private static void checkIOAbc(boolean cio, String title){
+        abcBooks.First();
+        for(int i=0; i<abcBooks.GetSize();i++){
+            if(abcBooks.GetValue().getTitle().equals(title)){
+                abcBooks.GetValue().setCheckedIn(cio);
+            }
+            else{
+                abcBooks.Next();
+            }
+        }
 
     }
+    private static void checkIOImp(boolean cio, String title){
+        impBooks.First();
+        for(int i=0; i<impBooks.GetSize();i++){
+            if(impBooks.GetValue().getTitle().equals(title)){
+                impBooks.GetValue().setCheckedIn(cio);
+            }
+            else{
+                impBooks.Next();
+            }
+        }
+    }
+
 }

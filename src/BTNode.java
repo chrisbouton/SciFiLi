@@ -96,25 +96,6 @@ class BTNode
         return true;
     }
 
-//    public void impInsert(Book book){
-//        books.First();
-//        for(int i = 0; i < books.GetSize(); i++){
-//            //if current book in book's importance is less than desired book
-//            if(books.GetValue().getImportance() <= book.getImportance())
-//            {
-//                books.InsertBefore(book);
-//                return;
-//            }
-//
-//            //if current book in books' importance is greater than desired book
-//            if(books.GetValue().getImportance() <= book.getImportance())
-//            {
-//                books.Next();
-//            }
-//        }
-//        return;
-//    }
-
     public List<Book> getBooks() {
         return books;
     }
@@ -129,25 +110,36 @@ class BTNode
             books.Next();
         }
     }
-
-    public boolean checkBook(Book book){
-         /*
-        unimplemented
-         */
-        return false;
+    public boolean printBooks(boolean cio){
+        books.First();
+        int size = books.GetSize();
+        //System.out.println(size);
+        int j=0;
+        for(int i=0; i<size;i++) {
+            Book curr = books.GetValue();
+            if(curr.getcheckedIn()==cio){
+                j++;
+                System.out.println((j)+"... "+curr);
+            }
+            books.Next();
+        }
+        System.out.println(j);
+        if(j==0){
+            return false;
+        }
+        else return true;
     }
 
-    //    /* Function to set data to node */
-//
-//    public void setData(int d)
-//    {
-//        data = d;
-//    }
-//
-//    /* Function to get data from node */
-//
-//    public int getData()
-//    {
-//        return data;
-//    }
+    public boolean checkBook(boolean cio, String title){
+        books.First();
+        int size =books.GetSize();
+        for(int i=0; i<size;i++) {
+            Book curr = books.GetValue();
+            if(curr.getTitle().toLowerCase().equals(title)){
+                curr.setCheckedIn(cio);
+            }
+        }
+
+        return false;
+    }
 }

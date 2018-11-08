@@ -44,7 +44,29 @@ public class Book {
     }
 
     public void setCheckedIn(boolean cio){
-        checkedIn = cio;
+        if(cio==checkedIn){
+            if(cio){
+                System.out.println(Title+" was already checked in");
+            }
+            else{
+                System.out.println(Title+" was already checked out");
+            }
+        }
+        else {
+            if(cio) {
+                System.out.println(Title + " has been checked in.");
+                checkedIn = true;
+            }
+            else{
+
+                System.out.println(Title + " has been checked out.");
+                checkedIn = false;
+            }
+        }
+    }
+
+    public void hardCheckIn(boolean cio){
+        checkedIn=cio;
     }
 
 
