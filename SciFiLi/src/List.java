@@ -1,6 +1,7 @@
 /* ***************************************************
  * Christopher Bouton
  * 10-06-18
+ * @version final
  *
  * This class implements a linked list abstract data type into Java with Node and List objects.
  * Using generics, we allow for the List and Nodes to use different types (allowing for lists of char, int, and float.)
@@ -104,7 +105,6 @@ public class List<Type>{
 			n = n.getLink();
 			i++;
 		}
-
 		return i;
 	}
 

@@ -1,10 +1,17 @@
 /**
  * @author Andrew Hall Chris Bouton
+ * @version 3.0 (nearly there)
+ *
+ * This is the MAIN class for SciFiLi which will run the full Library program
+ *
+ * A Library has Books read from the last dayOut file
+ * A Library can check in and out Books
+ *           can make new Books
+ *           can display Books in various ways
+ *           can run Fire Drills to see what books ge saved
  *
  */
-
 import java.util.Scanner;
-import java.util.regex.*;
 import java.util.Random;
 import java.io.*;
 
@@ -25,7 +32,7 @@ public class SciFiLi {
         File log = new File("src//log.txt");
         Scanner logReader = new Scanner(log);
         int logNum = Integer.parseInt(logReader.next());
-        //System.out.println(logNum);
+        System.out.println("Day "+logNum);
 
         //path for current days' log
         String path = "src//Logs//dayOut"+logNum+".txt";
@@ -34,16 +41,16 @@ public class SciFiLi {
         /*
         source file and scanners
         */
-        File input = new File("src//Logs//dayOut1.txt");
-        //File input = new File(path);
+        //File input = new File("src//Logs//dayOut1.txt");
+        File input = new File(path);
         // reads the File input
         Scanner reader = new Scanner(input);//file);
         // takes user input
         Scanner UI = new Scanner(System.in);
+
         /*
         Static variables
          */
-
         lib = new BT();
         bookCount = 0;
         impBooks = new List<>();
@@ -86,7 +93,6 @@ public class SciFiLi {
             //#Chris# lib.acbInsert(currBook);
             bookCount++;
             //System.out.println(currBook);
-
         }
         if (DEBUG==1) {
             System.out.println("Authors:");
@@ -123,16 +129,26 @@ public class SciFiLi {
                 System.out.println("1 : Look for a specific a title");
                 System.out.println("2 : See all books by "+currAuthor);
                 String searchChoice = UI.next().trim();
-
                 if(searchChoice.equals("1")){
                     System.out.println("What is the Title of the Book?");
-                    String bookTitle = UI.next().trim();
-
-                    System.out.println("Im sorry, I have not implemented this feature yet");
-                    System.out.println("Unable to find: "+bookTitle);
-                    /*
-                    * find the book and see if it is in or checked out
-                    */
+                    System.out.println("Please use _ for space.");
+                    String currTitle = UI.next().trim();
+                    currTitle = currTitle.replaceAll("[_]"," ");
+                    if(!search(currTitle,currAuthor)){
+                        System.out.println("Unable to find: "+currTitle);
+                        System.out.println();
+                        System.out.println("would you like to add this book?");
+                        System.out.println("1 : yes");
+                        System.out.println("2 : no");
+                        String addChoice = UI.next().trim();
+                        if(addChoice.equals("1")){
+                            Book addBook = new Book(currTitle,currAuthor,bookCount+1);
+                            addBook.hardCheckIn(true);
+                            lib.insert(addBook);
+                            impInsert(addBook);
+                            abcInsert(addBook);
+                        }
+                    }
                 }
                 else if(searchChoice.equals("2")){
                     printAuthor(currAuthor);
@@ -174,6 +190,7 @@ public class SciFiLi {
                     if(onlyCheckedIn){
                         System.out.println("Checked in Books by Author: ");
                         System.out.println();
+                        printAuthorsCio(true);
                     }
                     else{
                         System.out.println("All Books sorted by Author: ");
@@ -210,7 +227,7 @@ public class SciFiLi {
                     System.out.println("Use _ for spaces");
                     String currTitle = UI.next();
                     currTitle = currTitle.replaceAll("[_]"," ");
-                    System.out.println(currTitle);
+                    //System.out.println(currTitle);
                     if(!checkIO(true,currTitle,currAuthor)){
                         System.out.println("True");
                     }
@@ -244,7 +261,6 @@ public class SciFiLi {
                 else{
                     System.out.println("No books to check out.");
                 }
-
             }
             // #5# returns
             else if(UIin.equals("5")){
@@ -390,27 +406,36 @@ public class SciFiLi {
             System.out.println("Thank you user!");
         }
         System.out.println("Goodbye User");
-//        String newPath = "src//Logs//dayOut"+(logNum+1)+".txt";
-//        FileWriter fileWriter = new FileWriter(newPath);
-//        PrintWriter printWriter = new PrintWriter(fileWriter);
-//        //update log
-//        FileWriter logWriter = new FileWriter("src//log.txt");
-//        PrintWriter logPrinter = new PrintWriter(logWriter);
-//        logPrinter.print(logNum+1);
-//        logPrinter.close();
+        UI.close();
 
-//        //write to dayOut#.txt
-//        printWriter.println(logNum);
-//        printWriter.println("bookTitle, bookAuthor, Cio, importance");
-//        printWriter.close();
+        //update log
+        String newPath = "src//Logs//dayOut"+(logNum+1)+".txt";
+        FileWriter logWriter = new FileWriter("src//log.txt");
+        PrintWriter logPrinter = new PrintWriter(logWriter);
+        logPrinter.print(logNum+1);
+        logPrinter.close();
+
+        //writes books to the new file
+        FileWriter fileWriter = new FileWriter(newPath);
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        //write to dayOut#.txt
+        impBooks.First();
+        for(int i=0;i<impBooks.GetSize()-1;i++){
+            printWriter.println(impBooks.GetValue().toWrite());
+            impBooks.Next();
+        }
+        //write the last book without a new line char
+        printWriter.print(impBooks.GetValue().toWrite());
+        printWriter.close();
     }
 
-    private static void printAllNodes(){
+    // print all the authors if you don't care about checked in/out
+    private static void printAllNodes() {
         lib.goRoot();
         printAllNode(lib.current);
     }
-
-    private static void printAllNode(BTNode n)throws NullPointerException{
+    private static void printAllNode(BTNode n) throws NullPointerException {
         String aut = n.getAuthor();
         System.out.println("Book(s) by: "+aut);
         n.printBooks();
@@ -424,12 +449,35 @@ public class SciFiLi {
         }
     }
 
+    // print all the authors if you care about checked in/out
+    private static void printAuthorsCio(boolean cio){
+
+        lib.goRoot();
+        printAuthorsCio(cio,lib.current);
+    }
+    private static void printAuthorsCio(boolean cio,BTNode n){
+        String aut = n.getAuthor();
+        String io;
+        if(cio) io = " in";
+        else io = " out";
+        System.out.println("Book(s) checked"+io+" by "+aut);
+        n.printBooks(cio);
+        if(n.getLeft()!=null){
+            //System.out.println("left");
+            printAuthorsCio(cio,n.getLeft());
+        }
+        if(n.getRight()!=null){
+            //System.out.println("right");
+            printAuthorsCio(cio,n.getRight());
+        }
+    }
+
     // print the author if you care about checked in/out
-    private static boolean printAuthor(String author,boolean cio){
+    private static boolean printAuthor(String author,boolean cio) {
         lib.goRoot();
         return printAuthor(author,lib.current,cio);
     }
-    private static boolean printAuthor(String author,BTNode n,boolean cio){
+    private static boolean printAuthor(String author,BTNode n,boolean cio) {
         if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())==0){
             System.out.println("The book(s) by "+author+" are:");
             boolean ret = n.printBooks(cio);
@@ -464,11 +512,11 @@ public class SciFiLi {
     }
 
     // print the author if you don't care about checked in/out
-    private static void printAuthor(String author){
+    private static void printAuthor(String author) {
         lib.goRoot();
         printAuthor(author,lib.current);
     }
-    private static void printAuthor(String author,BTNode n){
+    private static void printAuthor(String author,BTNode n) {
         if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())==0){
             System.out.println("The book(s) by "+author+" are:");
             System.out.println();
@@ -500,7 +548,48 @@ public class SciFiLi {
         }
     }
 
-    private static void impInsert(Book book){
+    private static boolean search(String title, String author){
+        lib.goRoot();
+        return search(title,author,lib.current);
+    }
+    private static boolean search(String title, String author,BTNode n){
+        if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())==0){
+            List<Book> currBooks = n.getBooks();
+            currBooks.First();
+            boolean found = false;
+            for(int i=0; i<currBooks.GetSize();i++){
+                if(currBooks.GetValue().getTitle().toLowerCase().equals(title.toLowerCase())){
+                    System.out.println(currBooks.GetValue());
+                    found = true;
+                    break;
+                }
+                currBooks.Next();
+            }
+            return found;
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())<0){
+            if(n.getRight()==null){
+                System.out.println("Author: "+author+" not found");
+                return false;
+            }
+            else{
+                search(title, author, n.getRight());
+            }
+        }
+        else if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())>0){
+            if(n.getLeft()==null){
+                System.out.println("Author: "+author+" not found");
+                return false;
+            }
+            else{
+                search(title, author, n.getLeft());
+            }
+        }
+        return false;
+    }
+
+    // insert by importance
+    private static void impInsert(Book book) {
         int impSize = impBooks.GetSize();
         //System.out.println(impSize);
         impBooks.First();
@@ -531,7 +620,8 @@ public class SciFiLi {
 
     }
 
-    private static void impPrint(boolean checkedInOnly){
+    // print by importance
+    private static void impPrint(boolean checkedInOnly) {
         System.out.println("impPrint");
         impBooks.First();
         int j=0;
@@ -554,7 +644,8 @@ public class SciFiLi {
         }
     }
 
-    private static void abcInsert(Book book){
+    // insert alphabetically by title
+    private static void abcInsert(Book book) {
         abcBooks.First();
         for(int i = 0; i < abcBooks.GetSize(); i++){
             //if current book in abcBooks is after, the desired addBook
@@ -575,7 +666,8 @@ public class SciFiLi {
         return;
     }
 
-    private static void abcPrint(boolean checkedInOnly){
+    // print alphabetically by title
+    private static void abcPrint(boolean checkedInOnly) {
         System.out.println("abcPrint");
         abcBooks.First();
         int j=0;
@@ -600,17 +692,19 @@ public class SciFiLi {
         //unf
     //}
 
-    private static boolean checkIO(boolean cio, String title, String author){
+    // check in or out a book
+    private static boolean checkIO(boolean cio, String title, String author) {
         //checkIOAbc(cio,title);
         //checkIOImp(cio,title);
         return checkIOAut(cio,title,author);
     }
 
-    private static boolean checkIOAut(boolean cio, String title, String author){
+    // check in or out by author
+    private static boolean checkIOAut(boolean cio, String title, String author) {
         lib.goRoot();
         return checkIOAut(cio,title,author,lib.current);
     }
-    private static boolean checkIOAut(boolean cio, String title, String author,BTNode n){
+    private static boolean checkIOAut(boolean cio, String title, String author,BTNode n) {
         if(n.getAuthor().toLowerCase().compareTo(author.toLowerCase())==0){
             System.out.println("AUT");
             boolean ret = n.checkBook(cio,title);
@@ -636,7 +730,8 @@ public class SciFiLi {
         return false;
     }
 
-    private static void checkIOAbc(boolean cio, String title){
+    // unused for now
+    private static void checkIOAbc(boolean cio, String title) {
         abcBooks.First();
         for(int i=0; i<abcBooks.GetSize();i++){
             if(abcBooks.GetValue().getTitle().toLowerCase().equals(title.toLowerCase())){
@@ -650,7 +745,7 @@ public class SciFiLi {
         }
 
     }
-    private static void checkIOImp(boolean cio, String title){
+    private static void checkIOImp(boolean cio, String title) {
         impBooks.First();
         for(int i=0; i<impBooks.GetSize();i++){
             if(impBooks.GetValue().getTitle().toLowerCase().equals(title.toLowerCase())){
@@ -664,7 +759,8 @@ public class SciFiLi {
         }
     }
 
-    private static Book[] getCheckedOut(){
+    // future proofing
+    private static Book[] getCheckedOut() {
         int size = impBooks.GetSize();
         impBooks.First();
         Book[] preCheckedOut = new Book[size];
@@ -682,60 +778,7 @@ public class SciFiLi {
         }
         return postCheckedOut;
     }
-
-    private static Book[] getCheckedOut(int lim){
-        int size = impBooks.GetSize();
-        impBooks.First();
-        Book[] preCheckedOut = new Book[size];
-        int j = 0;//counts checked out
-        //make a list with size of all books
-        //filled only with checked out books
-        for(int i=0;i<size;i++){
-            if(!impBooks.GetValue().getcheckedIn()){
-                preCheckedOut[j]=impBooks.GetValue();
-                j++;
-            }
-            impBooks.Next();
-        }
-        //there are more checked out books than lim
-        if(j>lim){
-            Random rand = new Random();
-            String indecies = ""+rand.nextInt(j);
-            for(int n=0;n<(lim-1);n++){
-                indecies +=","+rand.nextInt(j);
-            }
-            System.out.println(indecies);
-            String[] inds = indecies.split(",");
-            int[] ints = new int[inds.length];
-            for(int m=0;m<inds.length;m++){
-                ints[m]= Integer.parseInt(inds[m]);
-            }
-            for(int k=0;k<ints.length;k++){
-                for(int h=k+1;h<ints.length;h++){
-                    if(ints[k]==ints[h]){
-                        ints[h]+=1;
-                    }
-                }
-            }
-            //add the books to the list
-            Book[] postCheckedOut = new Book[lim];
-            for (int k = 0; k < lim; k++) {
-                int thisIndex = ints[k];
-                postCheckedOut[k] = preCheckedOut[thisIndex];
-            }
-            return postCheckedOut;
-        }
-        // there are less or equal checked out books than lim
-        else {
-            Book[] postCheckedOut = new Book[j];
-            for (int k = 0; k < j; k++) {
-                postCheckedOut[k] = preCheckedOut[k];
-            }
-            return postCheckedOut;
-        }
-    }
-
-    private static Book[] getCheckedIn(){
+    private static Book[] getCheckedIn() {
         int size = impBooks.GetSize();
         impBooks.First();
         Book[] preCheckedOut = new Book[size];
@@ -754,5 +797,64 @@ public class SciFiLi {
         return postCheckedOut;
     }
 
-
+    // returns a randomized list of books that are checked out size [0-lim]
+    // if the num of checked out books is less than lim, it returns all of them
+    private static Book[] getCheckedOut(int lim) {
+        int size = impBooks.GetSize();
+        impBooks.First();
+        // array big enough that it could fit all books if they were all checked out
+        Book[] preCheckedOut = new Book[size];
+        int j = 0;//counts checked out
+        //make a list with size of all books
+        //filled only with checked out books
+        for(int i=0;i<size;i++){
+            if(!impBooks.GetValue().getcheckedIn()){
+                preCheckedOut[j]=impBooks.GetValue();
+                j++;
+            }
+            impBooks.Next();
+        }
+        //there are more checked out books than lim
+        if(j>lim){
+            // get a string with lim # of rand ints
+            // at this point may contain dupes
+            Random rand = new Random();
+            String indecies = ""+rand.nextInt(j);
+            for(int n=0;n<(lim-1);n++){
+                indecies +=","+rand.nextInt(j);
+            }
+            //System.out.println(indecies);
+            // turn the string into an array then
+            // parse the string array into an int array
+            String[] inds = indecies.split(",");
+            int[] ints = new int[inds.length];
+            for(int m=0;m<inds.length;m++){
+                ints[m]= Integer.parseInt(inds[m]);
+            }
+            // remove dupes
+            for(int k=0;k<ints.length;k++){
+                for(int h=k+1;h<ints.length;h++){
+                    if(ints[k]==ints[h]){
+                        ints[h]+=1;
+                    }
+                }
+            }
+            //add the books to the list
+            Book[] postCheckedOut = new Book[lim];
+            for (int k = 0; k < lim; k++) {
+                int thisIndex = ints[k];
+                postCheckedOut[k] = preCheckedOut[thisIndex];
+            }
+            return postCheckedOut;
+        }
+        // there are less or equal checked out books than lim
+        else {
+            // add all j books to a list and return them
+            Book[] postCheckedOut = new Book[j];
+            for (int k = 0; k < j; k++) {
+                postCheckedOut[k] = preCheckedOut[k];
+            }
+            return postCheckedOut;
+        }
+    }
 }

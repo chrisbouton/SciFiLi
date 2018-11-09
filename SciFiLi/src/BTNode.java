@@ -7,11 +7,14 @@
 
 class BTNode
 {
+    // links
     BTNode left, right, parent;
+    // Author is used to sort node into BT
     private String Author;
+    // all the books by this Author
     private List<Book> books;
 
-    /* Constructor */
+    /* Default Constructor */
     public BTNode()
     {
         left = null;
@@ -21,7 +24,6 @@ class BTNode
         books = new List<>();
     }
     /* Constructor */
-
     public BTNode(String author)
     {
         left = null;
@@ -32,51 +34,48 @@ class BTNode
     }
 
     /* Function to set left node */
-
     public void setLeft(BTNode n)
     {
         left = n;
     }
 
     /* Function to set right node */
-
     public void setRight(BTNode n)
     {
         right = n;
     }
 
     /* Function to set parent node */
-
     public void setParent(BTNode n)
     {
         parent = n;
     }
 
     /* Function to get left node */
-
     public BTNode getLeft()
     {
         return left;
     }
 
     /* Function to get right node */
-
     public BTNode getRight()
     {
         return right;
     }
 
     /* Function to get parent node */
-
     public BTNode getParent()
     {
         return parent;
     }
 
+    /* Function to get Author */
     public String getAuthor(){
         return Author;
     }
 
+    /* Adds a Book to Books
+    * returns boolean if it is able to insert or not*/
     public boolean addBook(Book book){
         books.First();
         for(int i = 0; i < books.GetSize(); i++){
@@ -96,10 +95,12 @@ class BTNode
         return true;
     }
 
+    /* returns the LL of books*/
     public List<Book> getBooks() {
         return books;
     }
 
+    /* prints the Books in books */
     public void printBooks(){
         books.First();
         int size = books.GetSize();
@@ -110,6 +111,10 @@ class BTNode
             books.Next();
         }
     }
+
+    /* prints the Books in books,
+    *  if cio is true, prints only checked in books
+    *  if cio is false, prints only checked out books*/
     public boolean printBooks(boolean cio){
         books.First();
         int size = books.GetSize();
@@ -130,6 +135,8 @@ class BTNode
         else return true;
     }
 
+    /* checks a book in or out
+     * returns boolean true if check in/out is successful */
     public boolean checkBook(boolean cio, String title){
         books.First();
         int size =books.GetSize();

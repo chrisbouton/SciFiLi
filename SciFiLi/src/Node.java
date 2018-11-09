@@ -15,7 +15,6 @@ class Node<Type> {
         this.data = null;
 		this.link = null;
 	}
-
 	// accessors and mutators for the data component
 	public Type getData(){
 		return this.data;
